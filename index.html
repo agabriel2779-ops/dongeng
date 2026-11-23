@@ -5,6 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#221a3b">
+  <meta name="description" content="dongeng sebelum boboo">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="dongeng boboo">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>dongeng sebelum boboo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -637,6 +645,81 @@
       display: none
     }
 
+    /* ---------- cover dongeng (gambar dari dongengnya, fallback ke ikon) ---------- */
+    .kartu .ikon,
+    .sampul .ikon {
+      position: relative;
+      overflow: hidden
+    }
+
+    .ikon img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .kartu .ikon.ada-gambar {
+      width: 70px;
+      height: 70px
+    }
+
+    .sampul .ikon.ada-gambar {
+      width: 176px;
+      height: 176px;
+      margin-bottom: 16px
+    }
+
+    .kartu.segera {
+      opacity: .78
+    }
+
+    .daftar li:nth-child(3n) .kartu.segera {
+      opacity: .85
+    }
+
+    /* tombol pasang aplikasi (muncul kalau browser mendukung) */
+    .pasang {
+      display: none;
+      margin: 14px auto 0;
+      background: var(--mint);
+      color: var(--tinta);
+      border: 0;
+      border-radius: 18px 18px 18px 6px;
+      padding: 7px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #4aa88a;
+      transition: transform .1s, box-shadow .1s
+    }
+
+    .pasang.tampil {
+      display: block
+    }
+
+    .pasang:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #4aa88a
+    }
+
+    .pasang-ios {
+      display: none;
+      margin: 12px auto 0;
+      max-width: 330px;
+      background: var(--malam2);
+      border-radius: 18px;
+      padding: 8px 14px;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--redup)
+    }
+
+    .pasang-ios.tampil {
+      display: block
+    }
+
     /* ---------- detail ---------- */
     #detail {
       display: none
@@ -1045,6 +1128,8 @@
         <h1>dongeng sebelum boboo</h1>
         <p class="sapa" id="sapa"></p>
         <div class="chips-info" id="chipsInfo"></div>
+        <button class="pasang" id="pasang" type="button">pasang di HP</button>
+        <p class="pasang-ios" id="pasangIos">di iPhone: ketuk tombol Bagikan, lalu pilih "Tambah ke Layar Utama" biar bisa dibuka kayak aplikasi.</p>
       </header>
 
       <div class="pesan"><small>pesan malam ini</small>
@@ -1170,68 +1255,96 @@ const PESAN_MALAM = [
 ];
 
 // Tambah dongeng baru = tambah satu blok { ... } di bawah ini.
-// ikon: pilih salah satu -> daun, mahkota, bulan, bintang, kilau, bunga, hati
-// File audio taruh di folder "audio/" (disarankan .mp3)
+// ikon   : daun, mahkota, bulan, bintang, kilau, bunga, hati (dipakai kalau gambar belum ada)
+// gambar : cover dari ilustrasi dongengnya, taruh di folder "gambar/" (jpg/png/webp, ukuran persegi ~600x600 cukup).
+//          Kosongkan "" atau biarkan file belum ada -> otomatis pakai ikon.
+// file   : audio di folder "audio/" (disarankan .mp3). Kosongkan "" -> kartu tampil "segera hadir".
 const dongeng = [
   {
     ikon: "daun",
     judul: "kancil dan buaya",
     pembuka: "malam ini aku bacain kancil yang cerdik yaaa, secerdik kamu yang selalu tauu cara bikin aku senyumm teruss, pejeminn mata nyaa yaa",
+    gambar: "gambar/kancil.jpg",
     file: "audio/kancil.mp3"
   },
   {
     ikon: "mahkota",
     judul: "putri tidur",
     pembuka: " kaloo putrinyaa boboo seratus tahun, teruss baru ketemuu yang tuluss. kamuu gaa perlu menungguu selamaa itu, karena kamu sudaa adaa akuu sekarangg yang tuluss samaa kamuu, tanpa perluu nunggu lamaa.",
+    gambar: "gambar/putri-tidur.jpg",
     file: "audio/putri tidur.m4a"
   },
   {
     ikon: "bulan",
     judul: "penjaga bintang",
     pembuka: "adaa penjagaa bintang kecil yang jatuhh ke bumi, dan ia memerlukann seseorangg yang bisaa membantunyaa untuk naik,",
-    file: "./audio/penjaga bintang.m4a"
+    gambar: "gambar/penjaga-bintang.jpg",
+    file: "audio/penjaga bintang.m4a"
   },
   {
     ikon: "kilau",
     judul: "bintang jatuh di langit senja",
     pembuka: "dua orang yang gaa sengaja ketemu",
+    gambar: "gambar/bintang-jatuh.jpg",
     file: "audio/bintang jatuh.m4a"
   },
   {
     ikon: "bunga",
     judul: "bungae edelweis terakhir",
     pembuka: "semoga cinta kita abadi seperti bunga edelweiss",
+    gambar: "gambar/edelweis.jpg",
     file: "audio/bunga edelweis.m4a"
   },
   {
-    ikon:"hati",
-    judul:"kenal tanpa sengaja",
-    pembuka:"kenalnya tanpa sengaja, tapi sayangnyaa sayangg bangett",
-    file:"",
+    ikon: "hati",
+    judul: "kenal tanpa sengaja",
+    pembuka: "kenalnya tanpa sengaja, tapi sayangnyaa sayangg bangett",
+    gambar: "gambar/kenal-tanpa-sengaja.jpg",
+    file: ""   // <- isi nama file audionya, contoh: "audio/kenal tanpa sengaja.m4a"
+  },
+
+  /* ---- dongeng lain (audio menyusul, isi "file" kalau sudah ada) ---- */
+  {
+    ikon: "bulan",
+    judul: "malin kundang",
+    pembuka: "ceritanya tentang anak yang lupa pulang, tapi kamu tenang aja sayangg, aku gaa akan lupa jalan pulang ke kamuu",
+    gambar: "gambar/malin-kundang.jpg",
+    file: ""
   },
   {
-    ikon:"bunga",
-    judul:"",
-    pembuka:"",
-    file:"",
+    ikon: "bunga",
+    judul: "bawang merah bawang putih",
+    pembuka: "yang baik hati pasti dapet hadiah terindah, kayak aku yang dapet kamuu, hehee",
+    gambar: "gambar/bawang-merah-bawang-putih.jpg",
+    file: ""
   },
   {
-    ikon:"daun",
-    judul:"",
-    pembuka:"",
-    file:"",
+    ikon: "daun",
+    judul: "timun mas",
+    pembuka: "gadis pemberani yang gaa mau nyerah, mirip kamuu yang selalu kuat, dengerin yaa sampai habiss",
+    gambar: "gambar/timun-mas.jpg",
+    file: ""
   },
   {
-    ikon:"kilau",
-    judul:"",
-    pembuka:"",
-    file:"",
+    ikon: "kilau",
+    judul: "asal usul danau toba",
+    pembuka: "ada janji yang harus dijaga, dan janji aku ke kamuu itu selalu aku jaga, dengerin ceritanyaa yaa",
+    gambar: "gambar/danau-toba.jpg",
+    file: ""
   },
   {
-    ikon:"",
-    judul:"",
-    pembuka:"",
-    file:"",
+    ikon: "daun",
+    judul: "kelinci dan kura-kura",
+    pembuka: "pelan-pelan juga gaa apa-apa asal sampai, sama kayak kita, jalan pelan tapi pasti, yuk boboo sambil dengerin",
+    gambar: "gambar/kelinci-kura-kura.jpg",
+    file: ""
+  },
+  {
+    ikon: "mahkota",
+    judul: "cinderella",
+    pembuka: "sepatu kacanya pas banget cuma di satu kaki, sama kayak hatiku yang pas banget cuma sama kamuu",
+    gambar: "gambar/cinderella.jpg",
+    file: ""
   }
 ];
 
@@ -1289,12 +1402,30 @@ $("pesanMalam").textContent = PESAN_MALAM[hariKe % PESAN_MALAM.length];
 (function info(){
   const box = $("chipsInfo");
   const add = (t, i) => { const s = document.createElement("span"); s.className = "info"; s.innerHTML = (i ? ic(i) + " " : "") + t; box.appendChild(s); };
-  add(dongeng.length + " dongeng");
+  const siap = dongeng.filter(d => d.file).length, segera = dongeng.length - siap;
+  add(siap + " dongeng");
   if (TANGGAL_JADIAN) {
     const n = Math.floor((Date.now() - new Date(TANGGAL_JADIAN)) / 864e5);
     if (n >= 0) add("hari ke-" + n.toLocaleString("id-ID") + "", "hati");
   }
+  if (segera > 0) add(segera + " segera hadir", "bintang");
 })();
+
+/* cover dongeng: pakai gambar kalau ada, kalau belum ada atau gagal dimuat tetap pakai ikon */
+function pasangCover(el, d){
+  el.classList.remove("ada-gambar");
+  el.innerHTML = ic(d.ikon);
+  if (!d.gambar) return;
+  const img = new Image();
+  img.alt = ""; img.decoding = "async";
+  img.onload = () => { el.classList.add("ada-gambar"); el.innerHTML = ""; el.appendChild(img); };
+  img.src = d.gambar;
+}
+const adaFile = i => !!(dongeng[i] && dongeng[i].file);
+function cariLain(i, arah){
+  for (let k = i + arah; k >= 0 && k < dongeng.length; k += arah) if (adaFile(k)) return k;
+  return -1;
+}
 
 const fmt = s => {
   if (!isFinite(s)) return "0:00";
@@ -1312,12 +1443,12 @@ function gambarDaftar(){
     const li = document.createElement("li");
     li.style.setProperty("--acc", aksen(i));
     const b = document.createElement("button");
-    b.className = "kartu";
+    b.className = "kartu" + (d.file ? "" : " segera");
     b.innerHTML = '<span class="ikon"></span><span style="flex:1;min-width:0"><span class="judul"></span><small></small><span class="mini"><i></i></span></span>';
-    b.querySelector(".ikon").innerHTML = ic(d.ikon);
+    pasangCover(b.querySelector(".ikon"), d);
     b.querySelector(".judul").textContent = d.judul;
     const p = progres[d.judul];
-    b.querySelector("small").textContent = p && p.t > 3 ? "lanjut dari " + fmt(p.t) : "Ketuk untuk dengerin";
+    b.querySelector("small").textContent = !d.file ? "segera hadir" : (p && p.t > 3 ? "lanjut dari " + fmt(p.t) : "Ketuk untuk dengerin");
     if (p && p.d && p.t > 3) {
       const m = b.querySelector(".mini"); m.classList.add("tampil");
       m.firstChild.style.width = Math.min(100, p.t / p.d * 100) + "%";
@@ -1390,13 +1521,18 @@ function simpanProgres(paksa){
 function sesiMedia(){
   if (!("mediaSession" in navigator) || aktif < 0) return;
   try {
-    navigator.mediaSession.metadata = new MediaMetadata({ title: dongeng[aktif].judul, artist: NAMA_KAMU, album: "dongeng sebelum boboo" });
+    const dd = dongeng[aktif];
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: dd.judul, artist: NAMA_KAMU, album: "dongeng sebelum boboo",
+      artwork: dd.gambar ? [{ src: dd.gambar }] : []
+    });
     navigator.mediaSession.setActionHandler("play", () => player.play());
     navigator.mediaSession.setActionHandler("pause", () => player.pause());
     navigator.mediaSession.setActionHandler("seekbackward", () => geser(-15));
     navigator.mediaSession.setActionHandler("seekforward", () => geser(15));
-    navigator.mediaSession.setActionHandler("nexttrack", aktif < dongeng.length - 1 ? () => buka(aktif + 1, true) : null);
-    navigator.mediaSession.setActionHandler("previoustrack", aktif > 0 ? () => buka(aktif - 1, true) : null);
+    const sel = cariLain(aktif, 1), sbl = cariLain(aktif, -1);
+    navigator.mediaSession.setActionHandler("nexttrack", sel >= 0 ? () => buka(sel, true) : null);
+    navigator.mediaSession.setActionHandler("previoustrack", sbl >= 0 ? () => buka(sbl, true) : null);
   } catch {}
 }
 function geser(s){ if (player.duration) player.currentTime = Math.max(0, Math.min(player.duration, player.currentTime + s)); }
@@ -1422,7 +1558,8 @@ player.addEventListener("ended", () => {
   const j = dongeng[aktif].judul; delete progres[j]; LS.set("dongeng.progres", progres);
   $("penutup").style.display = "block";
   if (timer.mode === "habis") { mulaiFade(); return; }
-  if ($("autoNext").checked && aktif < dongeng.length - 1) buka(aktif + 1, true);
+  const sel = cariLain(aktif, 1);
+  if ($("autoNext").checked && sel >= 0) buka(sel, true);
 });
 player.addEventListener("error", () => {
   $("status").textContent = "dongengnyaa belum kuu tambahinn, hehee.";
@@ -1546,7 +1683,7 @@ function buka(i, langsungPutar){
   aktif = i; const d = dongeng[i];
   document.documentElement.style.setProperty("--acc", aksen(i));
   $("detail").style.setProperty("--acc", aksen(i));
-  $("dIkon").innerHTML = ic(d.ikon);
+  pasangCover($("dIkon"), d);
   $("dJudul").textContent = d.judul;
   $("dPembuka").textContent = d.pembuka;
   $("penutupJudul").textContent = PENUTUP_JUDUL;
@@ -1556,7 +1693,9 @@ function buka(i, langsungPutar){
   const p = progres[d.judul];
   pulihPosisi = p && p.t > 3 ? p.t : null;
   terakhir = d.judul; LS.set("dongeng.terakhir", terakhir);
-  player.src = d.file; player.playbackRate = KEC[kecepatanIdx]; player.volume = fadeFaktor;
+  if (d.file) player.src = d.file;
+  else { player.pause(); player.removeAttribute("src"); player.load(); $("status").textContent = "dongengnyaa belum kuu tambahinn, tunggu yaa sayangg, hehee."; }
+  player.playbackRate = KEC[kecepatanIdx]; player.volume = fadeFaktor;
   perbaruiBar(); ikonPlay(true);
   $("utama").style.display = "none"; $("detail").style.display = "block";
   window.scrollTo(0, 0); sesiMedia();
@@ -1575,6 +1714,27 @@ document.addEventListener("keydown", e => {
   if (e.code === "ArrowLeft") geser(-15);
   if (e.code === "ArrowRight") geser(15);
 });
+
+/* ---------- PWA: service worker + tombol pasang ---------- */
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+(function pwa(){
+  const sudahTerpasang = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (sudahTerpasang) return;
+  let tunda = null;
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); tunda = e; $("pasang").classList.add("tampil");
+  });
+  $("pasang").onclick = async () => {
+    if (!tunda) return;
+    tunda.prompt();
+    try { await tunda.userChoice; } catch {}
+    tunda = null; $("pasang").classList.remove("tampil");
+  };
+  window.addEventListener("appinstalled", () => { $("pasang").classList.remove("tampil"); $("pasangIos").classList.remove("tampil"); });
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) $("pasangIos").classList.add("tampil");
+})();
 
 gambarDaftar();
 </script>
