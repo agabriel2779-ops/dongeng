@@ -1231,6 +1231,7 @@
 
   <div class="pil" id="pil" role="status"></div>
 
+  <script src="supabase-config.js"></script>
   <script>
 /* =====================================================
    EDIT BAGIAN INI SAJA
@@ -1259,7 +1260,10 @@ const PESAN_MALAM = [
 // gambar : cover dari ilustrasi dongengnya, taruh di folder "gambar/" (jpg/png/webp, ukuran persegi ~600x600 cukup).
 //          Kosongkan "" atau biarkan file belum ada -> otomatis pakai ikon.
 // file   : audio di folder "audio/" (disarankan .mp3). Kosongkan "" -> kartu tampil "segera hadir".
-const dongeng = [
+//
+// CATATAN: kalau supabase-config.js sudah diisi, daftar dongeng diambil dari Supabase (diatur lewat admin.html)
+// dan daftar di bawah ini cuma jadi cadangan kalau Supabase belum bisa dihubungi dan belum ada cache.
+const DONGENG_STATIS = [
   {
     ikon: "daun",
     judul: "kancil dan buaya",
@@ -1347,6 +1351,7 @@ const dongeng = [
     file: ""
   }
 ];
+let dongeng = [];   // daftar yang dipakai halaman; diisi oleh muatDongeng() di bagian bawah
 
 const MENIT_TIMER = [5, 10, 15, 30];   // pilihan timer tidur
 const PENUTUP_JUDUL = "selamat boboo yaa sayangg";
@@ -1399,8 +1404,8 @@ $("sapa").textContent = "alowww " + NAMA_DIA + ". mauu dengerinn yang manaa nihh
 $("footer").innerHTML = "dibuat pakaii cintyaa oleh " + NAMA_KAMU.replace(/</g,"&lt;") + " " + ic("hati");
 const hariKe = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 864e5);
 $("pesanMalam").textContent = PESAN_MALAM[hariKe % PESAN_MALAM.length];
-(function info(){
-  const box = $("chipsInfo");
+function renderInfo(){
+  const box = $("chipsInfo"); box.innerHTML = "";
   const add = (t, i) => { const s = document.createElement("span"); s.className = "info"; s.innerHTML = (i ? ic(i) + " " : "") + t; box.appendChild(s); };
   const siap = dongeng.filter(d => d.file).length, segera = dongeng.length - siap;
   add(siap + " dongeng");
@@ -1409,7 +1414,7 @@ $("pesanMalam").textContent = PESAN_MALAM[hariKe % PESAN_MALAM.length];
     if (n >= 0) add("hari ke-" + n.toLocaleString("id-ID") + "", "hati");
   }
   if (segera > 0) add(segera + " segera hadir", "bintang");
-})();
+}
 
 /* cover dongeng: pakai gambar kalau ada, kalau belum ada atau gagal dimuat tetap pakai ikon */
 function pasangCover(el, d){
@@ -1462,7 +1467,10 @@ function gambarDaftar(){
     li.append(b, f); ul.appendChild(li);
   });
   $("kosong").style.display = n ? "none" : "block";
-  $("kosong").textContent = filterMode === "fav" && !kataCari ? "yahh belum adaa yang kamuu jadiin favorit. ketuk ikon hati nyaa di dongeng yang kamu sukaa, kaloo perluu semuanyaa, hahahaha." : "belum ada yang cocok.";
+  $("kosong").textContent = memuat ? "lagi ambil dongengnyaa…"
+    : !dongeng.length ? "belum adaa dongeng nyaa, tunggu yaa sayangg."
+    : filterMode === "fav" && !kataCari ? "yahh belum adaa yang kamuu jadiin favorit. ketuk ikon hati nyaa di dongeng yang kamu sukaa, kaloo perluu semuanyaa, hahahaha."
+    : "belum ada yang cocok.";
   // tombol lanjutkan
   const t = dongeng.findIndex(d => d.judul === terakhir);
   const L = $("lanjut");
@@ -1736,7 +1744,39 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   if (/iphone|ipad|ipod/i.test(navigator.userAgent)) $("pasangIos").classList.add("tampil");
 })();
 
-gambarDaftar();
+/* ---------- sumber data: Supabase (kalau sudah diisi) atau daftar statis ---------- */
+const SB_URL = String(window.SB_URL || "").replace(/\/+$/, "");
+const SB_KEY = String(window.SB_KEY || "");
+const SB_AKTIF = !!(SB_URL && SB_KEY) && !/GANTI/i.test(SB_URL + SB_KEY);
+const urlPublik = p => p ? SB_URL + "/storage/v1/object/public/dongeng/" + p.split("/").map(encodeURIComponent).join("/") : "";
+const dariRow = r => ({ ikon: r.ikon || "bintang", judul: r.judul, pembuka: r.pembuka || "", gambar: urlPublik(r.gambar_path), file: urlPublik(r.audio_path) });
+let memuat = false;
+
+function terapkan(daftar){
+  const judulAktif = aktif >= 0 && dongeng[aktif] ? dongeng[aktif].judul : null;
+  dongeng = daftar;
+  if (judulAktif) { const i = dongeng.findIndex(d => d.judul === judulAktif); if (i >= 0) aktif = i; }
+  renderInfo(); gambarDaftar();
+}
+
+async function muatDongeng(){
+  if (!SB_AKTIF) { terapkan(DONGENG_STATIS); return; }
+  const cache = LS.get("dongeng.daftar", null);
+  if (Array.isArray(cache) && cache.length) terapkan(cache);
+  else { memuat = true; terapkan([]); }
+  try {
+    const res = await fetch(SB_URL + "/rest/v1/dongeng?select=*&order=urutan.asc,id.asc", { headers: { apikey: SB_KEY } });
+    if (!res.ok) throw new Error("status " + res.status);
+    const daftar = (await res.json()).map(dariRow);
+    LS.set("dongeng.daftar", daftar);
+    memuat = false; terapkan(daftar);
+  } catch (err) {
+    memuat = false;
+    if (dongeng.length) gambarDaftar(); else terapkan(DONGENG_STATIS);
+  }
+}
+
+muatDongeng();
 </script>
 </body>
 
