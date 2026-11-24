@@ -1,10 +1,11 @@
 /* Service worker "dongeng sebelum boboo"
-   - halaman: network-first (kalau ada update dari Vercel langsung kebaca, offline tetap bisa buka)
+   - halaman, .js, .json: network-first (update dari Vercel langsung kebaca, offline tetap bisa buka)
    - cover, ikon, font: simpan di cache supaya cepat dan tetap muncul offline
    - audio: sengaja TIDAK dicache di sini (file besar + butuh dukungan Range), jadi dibiarkan diurus browser
+   - admin.html: tidak disentuh sama sekali
    Naikkan angka VERSI kalau mau memaksa cache lama dibersihkan. */
-const VERSI = "dongeng-v1";
-const SHELL = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
+const VERSI = "dongeng-v2";
+const SHELL = ["./", "index.html", "manifest.json", "supabase-config.js", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(
@@ -24,6 +25,7 @@ self.addEventListener("activate", e => {
 
 const AUDIO = /\.(mp3|m4a|aac|wav|ogg|opus|flac)(\?.*)?$/i;
 const FONT_HOST = /(^|\.)fonts\.(googleapis|gstatic)\.com$/;
+const SB_HOST = /\.supabase\.co$/;
 
 function simpan(req, res) {
   if (res && (res.ok || res.type === "opaque")) {
@@ -41,19 +43,27 @@ self.addEventListener("fetch", e => {
   // audio & permintaan Range: biarkan browser yang urus
   if (req.headers.has("range") || req.destination === "audio" || AUDIO.test(url.pathname)) return;
 
-  // halaman utama: network-first
-  if (req.mode === "navigate") {
-    e.respondWith(
-      fetch(req).then(res => simpan("index.html", res))
-        .catch(() => caches.match("index.html").then(r => r || caches.match("./")))
-    );
-    return;
+  const sama = url.origin === self.location.origin;
+
+  if (sama) {
+    // halaman admin tidak boleh ikut dicache
+    if (/\/admin(\.html)?$/i.test(url.pathname)) return;
+
+    // halaman, skrip, manifest: network-first
+    if (req.mode === "navigate" || /\.(js|json|html)$/i.test(url.pathname)) {
+      e.respondWith(
+        fetch(req).then(res => simpan(req, res))
+          .catch(() => caches.match(req).then(r => r || (req.mode === "navigate" ? caches.match("index.html") : undefined)))
+      );
+      return;
+    }
+  } else {
+    // cover dari Supabase Storage dan font Google: boleh dicache
+    const coverSupabase = SB_HOST.test(url.hostname) && url.pathname.includes("/storage/v1/object/public/dongeng/gambar/");
+    if (!coverSupabase && !FONT_HOST.test(url.hostname)) return;   // selain itu (termasuk API data) langsung ke jaringan
   }
 
-  const sama = url.origin === self.location.origin;
-  if (!sama && !FONT_HOST.test(url.hostname)) return;
-
-  // sisanya (cover, ikon, manifest, font): stale-while-revalidate
+  // sisanya (gambar, ikon, font): stale-while-revalidate
   e.respondWith(
     caches.match(req).then(cache => {
       const jaringan = fetch(req).then(res => simpan(req, res)).catch(() => cache);

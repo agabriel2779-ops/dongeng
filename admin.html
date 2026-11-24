@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#221a3b">
+  <title>admin dongeng</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Warna solid, tanpa gradasi. Gaya sama dengan halaman utama. */
+    :root {
+      --malam: #221a3b;
+      --malam2: #2d2350;
+      --panel: #33275c;
+      --chip: #43347a;
+      --teks: #fff3e2;
+      --redup: #b9aed6;
+      --tinta: #2a1d44;
+      --pink: #ff9db8;
+      --kuning: #ffd36b;
+      --mint: #86e0c0;
+      --biru: #8fc2ff;
+      --bahaya: #ff7a7a;
+    }
+
+    * { box-sizing: border-box }
+    html, body { margin: 0 }
+
+    body {
+      min-height: 100vh;
+      background: var(--malam);
+      color: var(--teks);
+      font-family: "Baloo 2", system-ui, sans-serif;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      padding: env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 40px);
+    }
+
+    main { max-width: 640px; margin: 0 auto; padding: 24px 18px 40px }
+
+    h1, h2, .judul {
+      font-family: "Chewy", "Baloo 2", system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.15
+    }
+
+    h1 { font-size: 2rem; margin: 0; color: var(--kuning); transform: rotate(-1deg) }
+    h2 { font-size: 1.3rem; margin: 0 0 12px }
+
+    button, input, select, textarea { font: inherit; color: inherit }
+    [hidden] { display: none !important }
+
+    .atas { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; flex-wrap: wrap }
+    .atas .kanan { display: flex; gap: 8px; align-items: center }
+
+    .panel {
+      background: var(--panel);
+      border-radius: 28px 28px 28px 10px;
+      padding: 18px;
+      margin-bottom: 18px
+    }
+
+    .panel:nth-of-type(even) { border-radius: 28px 28px 10px 28px }
+
+    label { display: block; font-weight: 700; margin: 12px 0 4px }
+    label small { font-weight: 600; color: var(--redup) }
+
+    input[type=text], input[type=email], input[type=password], textarea, select {
+      width: 100%;
+      background: var(--malam);
+      border: 3px solid transparent;
+      border-radius: 18px 18px 18px 6px;
+      padding: 9px 14px;
+      font-weight: 600
+    }
+
+    textarea { min-height: 96px; resize: vertical }
+
+    input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: none;
+      border-color: var(--pink)
+    }
+
+    input[type=file] {
+      width: 100%;
+      background: var(--malam);
+      border-radius: 18px 18px 18px 6px;
+      padding: 9px 12px;
+      font-size: .92rem;
+      color: var(--redup)
+    }
+
+    input[type=file]::file-selector-button {
+      font: inherit;
+      font-weight: 700;
+      background: var(--chip);
+      color: var(--teks);
+      border: 0;
+      border-radius: 12px 12px 12px 4px;
+      padding: 5px 12px;
+      margin-right: 10px;
+      cursor: pointer
+    }
+
+    .tombol {
+      background: var(--chip);
+      border: 0;
+      border-radius: 16px 16px 16px 6px;
+      padding: 8px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #17102b;
+      transition: transform .1s, box-shadow .1s
+    }
+
+    .tombol:active { transform: translateY(3px); box-shadow: 0 1px 0 #17102b }
+    .tombol:disabled { opacity: .5; cursor: not-allowed }
+    .tombol.utama { background: var(--pink); color: var(--tinta) }
+    .tombol.mint { background: var(--mint); color: var(--tinta) }
+    .tombol.bahaya { background: var(--bahaya); color: var(--tinta) }
+    .tombol.kecil { padding: 5px 12px; font-size: .9rem; box-shadow: 0 3px 0 #17102b }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px }
+
+    .baris { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px }
+
+    .tautan { color: var(--biru); font-weight: 700 }
+
+    .pesan { min-height: 1.5em; margin: 10px 0 0; font-weight: 600; color: var(--kuning) }
+    .pesan.salah { color: var(--bahaya) }
+
+    .prog { width: 100%; height: 14px; border-radius: 14px; background: var(--malam); overflow: hidden; margin-top: 8px }
+    .prog i { display: block; height: 100%; width: 0; background: var(--mint); border-radius: 14px; transition: width .15s }
+
+    .pratinjau { margin-top: 8px; display: flex; align-items: center; gap: 12px; color: var(--redup); font-size: .9rem; font-weight: 600 }
+    .pratinjau img { width: 64px; height: 64px; object-fit: cover; border-radius: 42% 58% 55% 45% / 50% 45% 55% 50% }
+
+    /* daftar dongeng */
+    .daftar { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px }
+
+    .item {
+      background: var(--malam2);
+      border-radius: 22px 22px 22px 8px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .item .gbr {
+      flex: none;
+      width: 54px;
+      height: 54px;
+      border-radius: 42% 58% 55% 45% / 50% 45% 55% 50%;
+      background: var(--chip);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      font-family: "Chewy", sans-serif;
+      color: var(--kuning)
+    }
+
+    .item .gbr img { width: 100%; height: 100%; object-fit: cover; display: block }
+    .item .teks { flex: 1 1 140px; min-width: 0 }
+    .item .judul { font-size: 1.15rem; display: block; overflow-wrap: anywhere }
+    .item small { color: var(--redup); font-weight: 600; display: block }
+    .item .aksi { display: flex; gap: 6px; flex-wrap: wrap }
+    .kosong { color: var(--redup); text-align: center; padding: 14px 0; margin: 0 }
+
+    @media (prefers-reduced-motion:reduce) { * { transition: none !important } }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="atas">
+      <h1>admin dongeng</h1>
+      <div class="kanan">
+        <a class="tautan" href="./">lihat web →</a>
+        <button class="tombol kecil" id="keluar" hidden>keluar</button>
+      </div>
+    </div>
+
+    <p class="pesan salah" id="errConfig" hidden>Isi dulu <b>supabase-config.js</b> dengan Project URL dan kunci anon dari Supabase, lalu upload ulang.</p>
+
+    <!-- ===== LOGIN ===== -->
+    <section class="panel" id="masuk" hidden>
+      <h2>masuk dulu yaa</h2>
+      <form id="formMasuk">
+        <label for="email">email</label>
+        <input type="email" id="email" autocomplete="username" required>
+        <label for="sandi">password</label>
+        <input type="password" id="sandi" autocomplete="current-password" required>
+        <div class="baris"><button class="tombol utama" id="btnMasuk" type="submit">masuk</button></div>
+        <p class="pesan" id="pesanMasuk" role="status"></p>
+      </form>
+    </section>
+
+    <!-- ===== ADMIN ===== -->
+    <section id="app" hidden>
+      <div class="panel">
+        <h2 id="judulForm">tambah dongeng</h2>
+        <form id="form">
+          <label for="fJudul">judul</label>
+          <input type="text" id="fJudul" maxlength="120" required>
+
+          <label for="fPembuka">kata pembuka <small>(tampil di atas pemutar)</small></label>
+          <textarea id="fPembuka"></textarea>
+
+          <label for="fIkon">ikon <small>(dipakai kalau cover belum ada)</small></label>
+          <select id="fIkon">
+            <option value="bintang">bintang</option>
+            <option value="bulan">bulan</option>
+            <option value="daun">daun</option>
+            <option value="mahkota">mahkota</option>
+            <option value="kilau">kilau</option>
+            <option value="bunga">bunga</option>
+            <option value="hati">hati</option>
+          </select>
+
+          <label for="fGambar">cover <small>(gambar dari dongengnya, jpg/png/webp)</small></label>
+          <input type="file" id="fGambar" accept="image/*">
+          <div class="pratinjau" id="pratinjau" hidden><img id="pratinjauImg" alt=""><span id="pratinjauKet"></span></div>
+
+          <label for="fAudio">audio <small>(mp3 / m4a; batas ukuran mengikuti paket Supabase, gratis sekitar 50 MB)</small></label>
+          <input type="file" id="fAudio" accept="audio/*,.m4a,.mp3">
+          <div class="pratinjau" id="ketAudio" hidden></div>
+
+          <div class="prog" id="prog" hidden><i id="progIsi"></i></div>
+
+          <div class="baris">
+            <button class="tombol utama" id="btnSimpan" type="submit">simpan</button>
+            <button class="tombol" id="btnBatal" type="button" hidden>batal ubah</button>
+          </div>
+          <p class="pesan" id="pesan" role="status"></p>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>daftar dongeng</h2>
+        <ul class="daftar" id="daftar"></ul>
+        <p class="kosong" id="kosong" hidden>belum ada dongeng. tambah yang pertama di atas yaa.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+const $ = id => document.getElementById(id);
+const BUCKET = "dongeng";
+const SB_URL = (window.SB_URL || "").replace(/\/+$/, "");
+const SB_KEY = window.SB_KEY || "";
+const siap = SB_URL && SB_KEY && !/GANTI/i.test(SB_URL + SB_KEY) && window.supabase;
+
+let sb = null, rows = [], edit = null, sibuk = false;
+
+/* ---------- util ---------- */
+const urlPublik = p => p ? SB_URL + "/storage/v1/object/public/" + BUCKET + "/" + p.split("/").map(encodeURIComponent).join("/") : "";
+const slug = s => (s || "file").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "file";
+function ekstensi(file, cadangan){
+  const m = /\.([a-z0-9]{2,5})$/i.exec(file.name || "");
+  return m ? m[1].toLowerCase() : cadangan;
+}
+const ukuran = b => b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
+function pesan(t, salah, el){ el = el || $("pesan"); el.textContent = t || ""; el.classList.toggle("salah", !!salah); }
+function pesanError(e){ return (e && (e.message || e.error_description || e.msg)) || String(e); }
+function cek(res){ if (res && res.error) throw res.error; return res; }
+
+/* ---------- login ---------- */
+function tampil(session){
+  $("masuk").hidden = !!session;
+  $("app").hidden = !session;
+  $("keluar").hidden = !session;
+  if (session) muat();
+}
+
+async function mulai(){
+  if (!siap) { $("errConfig").hidden = false; return; }
+  sb = window.supabase.createClient(SB_URL, SB_KEY);
+  const { data } = await sb.auth.getSession();
+  tampil(data.session);
+  sb.auth.onAuthStateChange((_e, s) => { if (!!s !== !$("app").hidden) tampil(s); });
+}
+
+$("formMasuk").onsubmit = async e => {
+  e.preventDefault();
+  if (!sb) return;
+  $("btnMasuk").disabled = true; pesan("masuk…", false, $("pesanMasuk"));
+  const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("sandi").value });
+  $("btnMasuk").disabled = false;
+  if (error) pesan("gagal masuk: " + pesanError(error), true, $("pesanMasuk"));
+  else { pesan("", false, $("pesanMasuk")); $("sandi").value = ""; }
+};
+$("keluar").onclick = async () => { await sb.auth.signOut(); tampil(null); };
+
+/* ---------- data ---------- */
+async function muat(){
+  const res = await sb.from("dongeng").select("*").order("urutan", { ascending: true }).order("id", { ascending: true });
+  if (res.error) { pesan("gagal ambil data: " + pesanError(res.error), true); return; }
+  rows = res.data || [];
+  gambarDaftar();
+}
+
+function gambarDaftar(){
+  const ul = $("daftar"); ul.innerHTML = "";
+  $("kosong").hidden = rows.length > 0;
+  rows.forEach((r, i) => {
+    const li = document.createElement("li"); li.className = "item";
+
+    const g = document.createElement("span"); g.className = "gbr";
+    if (r.gambar_path) { const im = document.createElement("img"); im.alt = ""; im.loading = "lazy"; im.src = urlPublik(r.gambar_path); g.appendChild(im); }
+    else g.textContent = (r.judul || "?").charAt(0).toUpperCase();
+
+    const t = document.createElement("span"); t.className = "teks";
+    const j = document.createElement("span"); j.className = "judul"; j.textContent = r.judul;
+    const s = document.createElement("small");
+    s.textContent = (i + 1) + ". " + (r.audio_path ? "audio ada" : "audio belum ada (segera hadir)") + (r.gambar_path ? " · cover ada" : " · cover belum ada");
+    t.append(j, s);
+
+    const a = document.createElement("span"); a.className = "aksi";
+    const btn = (teks, fn, kelas, mati) => { const b = document.createElement("button"); b.type = "button"; b.className = "tombol kecil " + (kelas || ""); b.textContent = teks; b.disabled = !!mati || sibuk; b.onclick = fn; return b; };
+    a.append(
+      btn("↑", () => geser(i, -1), "", i === 0),
+      btn("↓", () => geser(i, 1), "", i === rows.length - 1),
+      btn("ubah", () => mulaiUbah(r), "mint"),
+      btn("hapus", () => hapus(r), "bahaya")
+    );
+    li.append(g, t, a); ul.appendChild(li);
+  });
+}
+
+async function geser(i, arah){
+  const j = i + arah; if (j < 0 || j >= rows.length || sibuk) return;
+  sibuk = true; gambarDaftar();
+  try {
+    const a = rows.slice(); [a[i], a[j]] = [a[j], a[i]];
+    const hasil = await Promise.all(a.map((r, k) => r.urutan === k + 1 ? null : sb.from("dongeng").update({ urutan: k + 1 }).eq("id", r.id)));
+    hasil.forEach(cek);
+  } catch (e) { pesan("gagal mengubah urutan: " + pesanError(e), true); }
+  sibuk = false; await muat();
+}
+
+async function hapus(r){
+  if (sibuk) return;
+  if (!confirm('Hapus "' + r.judul + '" beserta file audio dan covernya? Ini tidak bisa dibatalkan.')) return;
+  sibuk = true; gambarDaftar(); pesan("menghapus…");
+  try {
+    const files = [r.audio_path, r.gambar_path].filter(Boolean);
+    cek(await sb.from("dongeng").delete().eq("id", r.id));
+    if (files.length) await sb.storage.from(BUCKET).remove(files);
+    if (edit && edit.id === r.id) selesaiUbah();
+    pesan("sudah dihapus.");
+  } catch (e) { pesan("gagal menghapus: " + pesanError(e), true); }
+  sibuk = false; await muat();
+}
+
+/* ---------- form ---------- */
+function mulaiUbah(r){
+  edit = r;
+  $("judulForm").textContent = "ubah dongeng";
+  $("fJudul").value = r.judul; $("fPembuka").value = r.pembuka || ""; $("fIkon").value = r.ikon || "bintang";
+  $("fGambar").value = ""; $("fAudio").value = "";
+  $("btnBatal").hidden = false; $("btnSimpan").textContent = "simpan perubahan";
+  segarkanPratinjau();
+  pesan("kosongkan kolom cover/audio kalau tidak mau menggantinya.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function selesaiUbah(){
+  edit = null;
+  $("form").reset();
+  $("judulForm").textContent = "tambah dongeng";
+  $("btnBatal").hidden = true; $("btnSimpan").textContent = "simpan";
+  $("prog").hidden = true; $("progIsi").style.width = "0";
+  segarkanPratinjau();
+}
+$("btnBatal").onclick = () => { selesaiUbah(); pesan(""); };
+
+let urlBlob = null;
+function segarkanPratinjau(){
+  if (urlBlob) { URL.revokeObjectURL(urlBlob); urlBlob = null; }
+  const g = $("fGambar").files[0], a = $("fAudio").files[0];
+  const box = $("pratinjau");
+  if (g) { urlBlob = URL.createObjectURL(g); $("pratinjauImg").src = urlBlob; $("pratinjauKet").textContent = g.name + " (" + ukuran(g.size) + ")"; box.hidden = false; }
+  else if (edit && edit.gambar_path) { $("pratinjauImg").src = urlPublik(edit.gambar_path); $("pratinjauKet").textContent = "cover sekarang"; box.hidden = false; }
+  else box.hidden = true;
+  const ka = $("ketAudio");
+  if (a) { ka.textContent = a.name + " (" + ukuran(a.size) + ")"; ka.hidden = false; }
+  else if (edit && edit.audio_path) { ka.textContent = "audio sekarang: " + edit.audio_path.split("/").pop(); ka.hidden = false; }
+  else ka.hidden = true;
+}
+$("fGambar").onchange = segarkanPratinjau;
+$("fAudio").onchange = segarkanPratinjau;
+
+/* upload pakai XHR supaya ada progress (meniru cara supabase-js: multipart FormData) */
+async function unggah(folder, file, cadanganEkstensi, label){
+  const { data } = await sb.auth.getSession();
+  if (!data.session) throw new Error("sesi habis, masuk lagi yaa");
+  const nama = file.name.replace(/\.[^.]+$/, "");
+  const path = folder + "/" + Date.now() + "-" + slug(nama) + "." + ekstensi(file, cadanganEkstensi);
+  await new Promise((ok, gagal) => {
+    const x = new XMLHttpRequest();
+    x.open("POST", SB_URL + "/storage/v1/object/" + BUCKET + "/" + path.split("/").map(encodeURIComponent).join("/"));
+    x.setRequestHeader("apikey", SB_KEY);
+    x.setRequestHeader("Authorization", "Bearer " + data.session.access_token);
+    x.setRequestHeader("x-upsert", "false");
+    x.upload.onprogress = e => {
+      if (!e.lengthComputable) return;
+      const p = Math.round(e.loaded / e.total * 100);
+      $("progIsi").style.width = p + "%"; pesan("mengunggah " + label + " " + p + "%…");
+    };
+    x.onload = () => {
+      if (x.status >= 200 && x.status < 300) return ok();
+      let m = "kode " + x.status;
+      try { const j = JSON.parse(x.responseText); m = j.message || j.error || m; } catch {}
+      gagal(new Error("upload " + label + " gagal: " + m));
+    };
+    x.onerror = () => gagal(new Error("upload " + label + " gagal: koneksi terputus"));
+    const fd = new FormData(); fd.append("cacheControl", "3600"); fd.append("", file);
+    x.send(fd);
+  });
+  return path;
+}
+
+$("form").onsubmit = async e => {
+  e.preventDefault();
+  if (sibuk) return;
+  const judul = $("fJudul").value.trim();
+  if (!judul) { pesan("judulnya diisi dulu yaa", true); return; }
+  const gambar = $("fGambar").files[0] || null, audio = $("fAudio").files[0] || null;
+
+  sibuk = true; $("btnSimpan").disabled = true; $("btnBatal").disabled = true; gambarDaftar();
+  $("prog").hidden = !(gambar || audio); $("progIsi").style.width = "0";
+  const baru = [], lama = [];
+  try {
+    const data = { judul, pembuka: $("fPembuka").value.trim(), ikon: $("fIkon").value };
+    if (gambar) { $("progIsi").style.width = "0"; const p = await unggah("gambar", gambar, "jpg", "cover"); baru.push(p); data.gambar_path = p; if (edit && edit.gambar_path) lama.push(edit.gambar_path); }
+    if (audio)  { $("progIsi").style.width = "0"; const p = await unggah("audio", audio, "mp3", "audio"); baru.push(p); data.audio_path = p; if (edit && edit.audio_path) lama.push(edit.audio_path); }
+
+    pesan("menyimpan data…");
+    if (edit) cek(await sb.from("dongeng").update(data).eq("id", edit.id));
+    else {
+      data.urutan = rows.reduce((m, r) => Math.max(m, r.urutan || 0), 0) + 1;
+      cek(await sb.from("dongeng").insert(data));
+    }
+    baru.length = 0;                       // sukses: file baru dipakai
+    if (lama.length) await sb.storage.from(BUCKET).remove(lama);   // buang file lama yang diganti
+    selesaiUbah(); pesan("tersimpan! cek di halaman utama yaa.");
+  } catch (err) {
+    if (baru.length) { try { await sb.storage.from(BUCKET).remove(baru); } catch {} }   // bersihkan upload yatim
+    pesan(pesanError(err), true);
+  }
+  sibuk = false; $("btnSimpan").disabled = false; $("btnBatal").disabled = false;
+  await muat();
+};
+
+mulai();
+  </script>
+</body>
+
+</html>
