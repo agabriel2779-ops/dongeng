@@ -1109,11 +1109,242 @@
         transition: none
       }
     }
+
+    /* =====================================================
+       TEMA LIQUID GLASS
+       Kaca = isi putih transparan + blur latar + kilau tipis di tepi.
+       Tetap tanpa gradasi: semua warna solid, kilau dibuat dari inset shadow.
+       Blok ini menimpa gaya di atasnya; hapus blok ini kalau mau balik ke tampilan lama.
+       ===================================================== */
+    :root {
+      --campur: transparent;
+      --kaca: rgba(255, 255, 255, .11);
+      --kaca2: rgba(255, 255, 255, .18);
+      --blur: blur(24px) saturate(1.7);
+      --kilap: inset 1.5px 1.5px 1px -.5px rgba(255, 255, 255, .55), inset -1px -1px 1px -.5px rgba(255, 255, 255, .16), inset 0 0 0 1px rgba(255, 255, 255, .09);
+      --bayang: 0 10px 30px rgba(8, 4, 24, .35);
+      --bayang-kecil: 0 4px 14px rgba(8, 4, 24, .28);
+    }
+
+    /* bentuk warna solid di belakang kaca (supaya ada yang diburamkan) */
+    .cairan {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .cairan i {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .5;
+      animation: hanyut 18s ease-in-out infinite alternate
+    }
+
+    .cairan i:nth-child(1) { width: 300px; height: 300px; left: -90px; top: 6%; background: var(--pink) }
+    .cairan i:nth-child(2) { width: 240px; height: 240px; right: -70px; top: 30%; background: var(--biru); animation-duration: 22s; animation-delay: -6s }
+    .cairan i:nth-child(3) { width: 320px; height: 320px; left: 8%; bottom: -120px; background: var(--mint); animation-duration: 26s; animation-delay: -11s }
+    .cairan i:nth-child(4) { width: 170px; height: 170px; right: 12%; bottom: 12%; background: var(--kuning); animation-duration: 20s; animation-delay: -3s }
+
+    @keyframes hanyut {
+      to { transform: translate(40px, -60px) scale(1.08) }
+    }
+
+    /* teks yang duduk langsung di atas latar */
+    h1 { transform: none; text-shadow: 0 2px 14px rgba(8, 4, 24, .5) }
+    .sapa { color: var(--teks); opacity: .92 }
+    footer { color: var(--teks); opacity: .85 }
+    .sampul h2 { text-shadow: 0 2px 14px rgba(8, 4, 24, .5) }
+    #status { text-shadow: 0 1px 8px rgba(8, 4, 24, .5) }
+    .kosong { color: var(--teks); opacity: .85 }
+
+    /* permukaan kaca besar: blur + kilau */
+    .panel, .pembuka, .pesan, .penutup, .kartu, .lanjut, .pil, .pasang-ios, .info, .cari {
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--kilap), var(--bayang);
+    }
+
+    .panel, .panel:nth-of-type(even) {
+      background: var(--kaca);
+      border-radius: 30px
+    }
+
+    .pembuka {
+      background: var(--kaca);
+      border-radius: 28px;
+      margin-bottom: 22px
+    }
+
+    .pembuka::after { display: none }
+
+    .pesan {
+      background: color-mix(in srgb, var(--kuning) 24%, var(--campur));
+      color: var(--teks);
+      border-radius: 30px;
+      transform: none
+    }
+
+    .pesan::before { display: none }
+    .pesan small { color: var(--kuning) }
+
+    .penutup {
+      background: color-mix(in srgb, var(--pink) 28%, var(--campur));
+      color: var(--teks);
+      border-radius: 30px;
+      transform: none
+    }
+
+    .lanjut {
+      background: color-mix(in srgb, var(--mint) 30%, var(--campur));
+      color: var(--teks);
+      border-radius: 30px
+    }
+
+    .lanjut svg { fill: var(--teks) }
+    .lanjut .ikon { color: var(--teks) }
+
+    .lanjut:active {
+      transform: scale(.98);
+      box-shadow: var(--kilap), var(--bayang)
+    }
+
+    .pil {
+      background: rgba(34, 26, 59, .5);
+      color: var(--kuning);
+      border-radius: 999px;
+      padding: 8px 20px
+    }
+
+    .pasang-ios {
+      background: var(--kaca);
+      color: var(--teks);
+      border-radius: 22px
+    }
+
+    .info, .info:nth-child(2) {
+      background: var(--kaca);
+      color: var(--teks);
+      border-radius: 999px;
+      padding: 4px 14px;
+      box-shadow: var(--kilap)
+    }
+
+    .cari {
+      background: var(--kaca);
+      color: var(--teks);
+      border-radius: 999px;
+      padding: 11px 20px
+    }
+
+    .cari::placeholder { color: rgba(255, 243, 226, .6) }
+
+    /* kartu dongeng: kaca dengan semburat warna aksen */
+    .daftar li:nth-child(n) .kartu {
+      background: color-mix(in srgb, var(--acc) 26%, var(--campur));
+      color: var(--teks);
+      outline: 0;
+      transform: none;
+      border-radius: 30px;
+      padding: 12px 60px 12px 12px
+    }
+
+    .daftar li:nth-child(n) .kartu:focus-visible {
+      outline: 3px solid var(--teks);
+      outline-offset: 3px
+    }
+
+    .daftar li:nth-child(n) .kartu small { color: rgba(255, 243, 226, .86) }
+
+    .daftar li:nth-child(n) .kartu .ikon {
+      background: var(--acc);
+      border-radius: 20px;
+      box-shadow: var(--kilap)
+    }
+
+    .daftar li:nth-child(n) .mini { background: rgba(255, 255, 255, .2) }
+    .daftar li:nth-child(n) .mini i { background: var(--acc) }
+    .daftar li:nth-child(n) .fav svg { stroke: var(--teks) }
+    .daftar li:nth-child(n) .fav[aria-pressed="true"] svg { fill: #ff5c8a; stroke: #ff5c8a }
+
+    /* sampul di halaman dongeng */
+    .sampul .ikon {
+      border-radius: 40px;
+      transform: none;
+      background: var(--acc);
+      box-shadow: var(--kilap), 0 14px 34px rgba(8, 4, 24, .4)
+    }
+
+    /* kontrol kecil di dalam panel: isi transparan tanpa blur sendiri */
+    .tombol-pojok, .filter button, .kembali, .kontrol button, .pilih button, .pilih button:nth-child(even), .pasang {
+      background: var(--kaca2);
+      color: var(--teks);
+      border-radius: 18px;
+      box-shadow: var(--kilap), var(--bayang-kecil)
+    }
+
+    .filter button, .pilih button, .pilih button:nth-child(even) { border-radius: 999px }
+    .filter button { color: var(--teks) }
+
+    .tombol-pojok:active, .filter button:active, .kembali:active, .kontrol button:active,
+    .kontrol .main:active, .pilih button:active, .pasang:active {
+      transform: scale(.94);
+      box-shadow: var(--kilap)
+    }
+
+    .tombol-pojok[aria-pressed="true"] { background: var(--kuning); color: var(--tinta) }
+    .filter button.aktif { background: var(--pink); color: var(--tinta) }
+
+    .pilih button.aktif {
+      background: var(--acc);
+      color: var(--tinta);
+      box-shadow: var(--kilap), var(--bayang-kecil)
+    }
+
+    .kontrol .main {
+      background: color-mix(in srgb, var(--acc) 82%, var(--campur));
+      border-radius: 50%;
+      box-shadow: var(--kilap), 0 8px 24px color-mix(in srgb, var(--acc) 40%, transparent)
+    }
+
+    .kecepatan {
+      border-radius: 999px !important;
+      box-shadow: var(--kilap), var(--bayang-kecil) !important
+    }
+
+    .pasang { background: color-mix(in srgb, var(--mint) 70%, var(--campur)); color: var(--tinta) }
+
+    /* pemutar, slider, sakelar */
+    .bar .jalur { background: rgba(255, 255, 255, .16); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35) }
+    .bar .titik { background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .4), inset 0 -2px 3px rgba(0, 0, 0, .12) }
+    .waktu, .volume { color: rgba(255, 243, 226, .78) }
+    .sakelar .rel { background: rgba(255, 255, 255, .18); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .35) }
+    .sakelar .rel::after { background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .35) }
+    .sakelar input:checked+.rel::after { background: #fff }
+
+    /* cadangan kalau browser tidak punya backdrop-filter, atau pengguna minta transparansi dikurangi */
+    @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+      :root { --campur: #33275c; --kaca: #3d2f6e; --kaca2: #4a3a82 }
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      :root { --campur: #33275c; --kaca: #3d2f6e; --kaca2: #4a3a82 }
+      .panel, .pembuka, .pesan, .penutup, .kartu, .lanjut, .pil, .pasang-ios, .info, .cari {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cairan i { animation: none }
+    }
   </style>
 </head>
 
 <body>
 
+  <div class="cairan" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="bintang" aria-hidden="true" id="bintang"></div>
   <div class="redupan" aria-hidden="true"></div>
 
