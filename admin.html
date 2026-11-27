@@ -171,6 +171,14 @@
     .item .aksi { display: flex; gap: 6px; flex-wrap: wrap }
     .kosong { color: var(--redup); text-align: center; padding: 14px 0; margin: 0 }
 
+    /* balasan dari dia */
+    .emo { flex: none; width: 54px; height: 54px; display: grid; place-items: center; font-size: 1.8rem; border-radius: 16px; background: var(--kaca2) }
+    .isi-balas { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 600; margin: 2px 0 }
+    .lencana { display: inline-block; background: var(--pink); color: var(--tinta); border-radius: 999px; padding: 0 10px; font-family: "Baloo 2", sans-serif; font-size: .8rem; font-weight: 700; margin-left: 8px; vertical-align: middle }
+    .alat-balas { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px }
+    label.centang { display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer }
+    label.centang input { width: 18px; height: 18px; accent-color: var(--pink) }
+
     @media (prefers-reduced-motion:reduce) { * { transition: none !important } }
 
     /* =====================================================
@@ -322,6 +330,17 @@
     <!-- ===== ADMIN ===== -->
     <section id="app" hidden>
       <div class="panel">
+        <h2>balasan dari dia <span class="lencana" id="lencanaBalas" hidden></span></h2>
+        <div class="alat-balas">
+          <button class="tombol kecil" id="btnMuatBalas" type="button">muat ulang</button>
+          <button class="tombol kecil" id="btnBacaSemua" type="button">tandai semua dibaca</button>
+        </div>
+        <ul class="daftar" id="daftarBalas"></ul>
+        <p class="kosong" id="kosongBalas" hidden>belum ada balasan. nanti muncul di sini kalau dia sudah selesai dengerin dongeng dan kirim reaksi.</p>
+        <p class="pesan" id="pesanBalas" role="status"></p>
+      </div>
+
+      <div class="panel">
         <h2 id="judulForm">tambah dongeng</h2>
         <form id="form">
           <label for="fJudul">judul</label>
@@ -348,6 +367,14 @@
           <label for="fAudio">audio <small>(mp3 / m4a; batas ukuran mengikuti paket Supabase, gratis sekitar 50 MB)</small></label>
           <input type="file" id="fAudio" accept="audio/*,.m4a,.mp3">
           <div class="pratinjau" id="ketAudio" hidden></div>
+
+          <label for="fVnTeks">teks voice note <small>(kata-kata yang tampil di atas pemutar kecil; boleh dikosongkan)</small></label>
+          <textarea id="fVnTeks" maxlength="1000"></textarea>
+
+          <label for="fVn">voice note <small>(rekaman suara kamu, mp3 / m4a; boleh dikosongkan)</small></label>
+          <input type="file" id="fVn" accept="audio/*,.m4a,.mp3">
+          <div class="pratinjau" id="ketVn" hidden></div>
+          <label class="centang" id="barisHapusVn" hidden><input type="checkbox" id="fHapusVn"> hapus voice note yang sekarang</label>
 
           <div class="prog" id="prog" hidden><i id="progIsi"></i></div>
 
@@ -423,6 +450,7 @@ async function muat(){
   if (res.error) { pesan("gagal ambil data: " + pesanError(res.error), true); return; }
   rows = res.data || [];
   gambarDaftar();
+  await muatBalasan();
 }
 
 function gambarDaftar(){
@@ -438,7 +466,7 @@ function gambarDaftar(){
     const t = document.createElement("span"); t.className = "teks";
     const j = document.createElement("span"); j.className = "judul"; j.textContent = r.judul;
     const s = document.createElement("small");
-    s.textContent = (i + 1) + ". " + (r.audio_path ? "audio ada" : "audio belum ada (segera hadir)") + (r.gambar_path ? " · cover ada" : " · cover belum ada");
+    s.textContent = (i + 1) + ". " + (r.audio_path ? "audio ada" : "audio belum ada (segera hadir)") + (r.gambar_path ? " · cover ada" : " · cover belum ada") + (r.vn_audio_path ? " · voice note ada" : (r.vn_teks ? " · pesan ada" : ""));
     t.append(j, s);
 
     const a = document.createElement("span"); a.className = "aksi";
@@ -469,7 +497,7 @@ async function hapus(r){
   if (!confirm('Hapus "' + r.judul + '" beserta file audio dan covernya? Ini tidak bisa dibatalkan.')) return;
   sibuk = true; gambarDaftar(); pesan("menghapus…");
   try {
-    const files = [r.audio_path, r.gambar_path].filter(Boolean);
+    const files = [r.audio_path, r.gambar_path, r.vn_audio_path].filter(Boolean);
     cek(await sb.from("dongeng").delete().eq("id", r.id));
     if (files.length) await sb.storage.from(BUCKET).remove(files);
     if (edit && edit.id === r.id) selesaiUbah();
@@ -478,12 +506,70 @@ async function hapus(r){
   sibuk = false; await muat();
 }
 
+/* ---------- balasan dari dia ---------- */
+let balasan = [], sibukBalas = false;
+const waktuBalas = s => { try { return new Date(s).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" }); } catch { return s || ""; } };
+
+async function muatBalasan(){
+  const res = await sb.from("balasan").select("*").order("dibuat", { ascending: false }).limit(100);
+  if (res.error) {
+    pesan("gagal ambil balasan: " + pesanError(res.error) + " (sudah menjalankan supabase-balasan.sql di SQL Editor?)", true, $("pesanBalas"));
+    return;
+  }
+  balasan = res.data || [];
+  pesan("", false, $("pesanBalas"));
+  gambarBalasan();
+}
+
+function gambarBalasan(){
+  const ul = $("daftarBalas"); ul.innerHTML = "";
+  $("kosongBalas").hidden = balasan.length > 0;
+  const baru = balasan.filter(r => !r.dibaca).length;
+  $("lencanaBalas").hidden = !baru; $("lencanaBalas").textContent = baru + " baru";
+  $("btnBacaSemua").disabled = !baru || sibukBalas;
+  $("btnMuatBalas").disabled = sibukBalas;
+
+  balasan.forEach(r => {
+    const li = document.createElement("li"); li.className = "item";
+    const e = document.createElement("span"); e.className = "emo"; e.textContent = r.emoji || "💌";
+
+    const t = document.createElement("span"); t.className = "teks";
+    const j = document.createElement("span"); j.className = "judul"; j.textContent = r.judul || "(tanpa judul)";
+    if (!r.dibaca) { const l = document.createElement("span"); l.className = "lencana"; l.textContent = "baru"; j.appendChild(l); }
+    t.appendChild(j);
+    if (r.pesan) { const p = document.createElement("span"); p.className = "isi-balas"; p.textContent = r.pesan; t.appendChild(p); }
+    const s = document.createElement("small"); s.textContent = waktuBalas(r.dibuat); t.appendChild(s);
+
+    const a = document.createElement("span"); a.className = "aksi";
+    const btn = (teks, fn, kelas) => { const b = document.createElement("button"); b.type = "button"; b.className = "tombol kecil " + (kelas || ""); b.textContent = teks; b.disabled = sibukBalas; b.onclick = fn; return b; };
+    if (!r.dibaca) a.appendChild(btn("dibaca", () => ubahBalasan("baca", r), "mint"));
+    a.appendChild(btn("hapus", () => ubahBalasan("hapus", r), "bahaya"));
+
+    li.append(e, t, a); ul.appendChild(li);
+  });
+}
+
+async function ubahBalasan(aksi, r){
+  if (sibukBalas) return;
+  if (aksi === "hapus" && !confirm("Hapus balasan ini? Tidak bisa dibatalkan.")) return;
+  sibukBalas = true; gambarBalasan();
+  try {
+    if (aksi === "hapus") cek(await sb.from("balasan").delete().eq("id", r.id));
+    else if (aksi === "baca") cek(await sb.from("balasan").update({ dibaca: true }).eq("id", r.id));
+    else if (aksi === "semua") cek(await sb.from("balasan").update({ dibaca: true }).eq("dibaca", false));
+  } catch (e) { pesan("gagal: " + pesanError(e), true, $("pesanBalas")); }
+  sibukBalas = false; await muatBalasan();
+}
+$("btnMuatBalas").onclick = () => { if (!sibukBalas) muatBalasan(); };
+$("btnBacaSemua").onclick = () => ubahBalasan("semua");
+
 /* ---------- form ---------- */
 function mulaiUbah(r){
   edit = r;
   $("judulForm").textContent = "ubah dongeng";
   $("fJudul").value = r.judul; $("fPembuka").value = r.pembuka || ""; $("fIkon").value = r.ikon || "bintang";
   $("fGambar").value = ""; $("fAudio").value = "";
+  $("fVnTeks").value = r.vn_teks || ""; $("fVn").value = ""; $("fHapusVn").checked = false; $("barisHapusVn").hidden = !r.vn_audio_path;
   $("btnBatal").hidden = false; $("btnSimpan").textContent = "simpan perubahan";
   segarkanPratinjau();
   pesan("kosongkan kolom cover/audio kalau tidak mau menggantinya.");
@@ -492,6 +578,7 @@ function mulaiUbah(r){
 function selesaiUbah(){
   edit = null;
   $("form").reset();
+  $("barisHapusVn").hidden = true;
   $("judulForm").textContent = "tambah dongeng";
   $("btnBatal").hidden = true; $("btnSimpan").textContent = "simpan";
   $("prog").hidden = true; $("progIsi").style.width = "0";
@@ -511,9 +598,14 @@ function segarkanPratinjau(){
   if (a) { ka.textContent = a.name + " (" + ukuran(a.size) + ")"; ka.hidden = false; }
   else if (edit && edit.audio_path) { ka.textContent = "audio sekarang: " + edit.audio_path.split("/").pop(); ka.hidden = false; }
   else ka.hidden = true;
+  const v = $("fVn").files[0], kv = $("ketVn");
+  if (v) { kv.textContent = v.name + " (" + ukuran(v.size) + ")"; kv.hidden = false; }
+  else if (edit && edit.vn_audio_path) { kv.textContent = "voice note sekarang: " + edit.vn_audio_path.split("/").pop(); kv.hidden = false; }
+  else kv.hidden = true;
 }
 $("fGambar").onchange = segarkanPratinjau;
 $("fAudio").onchange = segarkanPratinjau;
+$("fVn").onchange = segarkanPratinjau;
 
 /* upload pakai XHR supaya ada progress (meniru cara supabase-js: multipart FormData) */
 async function unggah(folder, file, cadanganEkstensi, label){
@@ -550,15 +642,21 @@ $("form").onsubmit = async e => {
   if (sibuk) return;
   const judul = $("fJudul").value.trim();
   if (!judul) { pesan("judulnya diisi dulu yaa", true); return; }
-  const gambar = $("fGambar").files[0] || null, audio = $("fAudio").files[0] || null;
+  const gambar = $("fGambar").files[0] || null, audio = $("fAudio").files[0] || null, vnFile = $("fVn").files[0] || null;
+  const vnTeks = $("fVnTeks").value.trim();
+  const hapusVn = $("fHapusVn").checked && !!(edit && edit.vn_audio_path);
 
   sibuk = true; $("btnSimpan").disabled = true; $("btnBatal").disabled = true; gambarDaftar();
-  $("prog").hidden = !(gambar || audio); $("progIsi").style.width = "0";
+  $("prog").hidden = !(gambar || audio || vnFile); $("progIsi").style.width = "0";
   const baru = [], lama = [];
   try {
     const data = { judul, pembuka: $("fPembuka").value.trim(), ikon: $("fIkon").value };
     if (gambar) { $("progIsi").style.width = "0"; const p = await unggah("gambar", gambar, "jpg", "cover"); baru.push(p); data.gambar_path = p; if (edit && edit.gambar_path) lama.push(edit.gambar_path); }
     if (audio)  { $("progIsi").style.width = "0"; const p = await unggah("audio", audio, "mp3", "audio"); baru.push(p); data.audio_path = p; if (edit && edit.audio_path) lama.push(edit.audio_path); }
+    if (vnFile) { $("progIsi").style.width = "0"; const p = await unggah("vn", vnFile, "m4a", "voice note"); baru.push(p); data.vn_audio_path = p; if (edit && edit.vn_audio_path) lama.push(edit.vn_audio_path); }
+    else if (hapusVn) { data.vn_audio_path = null; lama.push(edit.vn_audio_path); }
+    // kolom voice note hanya dikirim kalau berubah, jadi simpan biasa tetap jalan walau supabase-voicenote.sql belum dijalankan
+    if (edit ? vnTeks !== (edit.vn_teks || "") : !!vnTeks) data.vn_teks = vnTeks || null;
 
     pesan("menyimpan data…");
     if (edit) cek(await sb.from("dongeng").update(data).eq("id", edit.id));
@@ -571,7 +669,9 @@ $("form").onsubmit = async e => {
     selesaiUbah(); pesan("tersimpan! cek di halaman utama yaa.");
   } catch (err) {
     if (baru.length) { try { await sb.storage.from(BUCKET).remove(baru); } catch {} }   // bersihkan upload yatim
-    pesan(pesanError(err), true);
+    let m = pesanError(err);
+    if (/vn_(teks|audio_path)/.test(m)) m += " (jalankan dulu supabase-voicenote.sql di SQL Editor)";
+    pesan(m, true);
   }
   sibuk = false; $("btnSimpan").disabled = false; $("btnBatal").disabled = false;
   await muat();

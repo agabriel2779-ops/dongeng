@@ -1339,6 +1339,177 @@
     @media (prefers-reduced-motion: reduce) {
       .cairan i { animation: none }
     }
+
+    /* ---- timer di bawah pemutar ---- */
+    .kontrol.sekunder { gap: 10px; flex-wrap: wrap }
+    .kontrol .kecepatan { display: inline-flex; align-items: center; justify-content: center }
+    .kontrol .kecepatan .ic { width: 1.15em; height: 1.15em; fill: none; margin-right: 5px }
+    .kontrol .kecepatan.aktif { background: var(--acc); color: var(--tinta) }
+    .timer-pilihan { margin-top: 14px }
+    .timer-pilihan[hidden] { display: none }
+    .timer-pilihan:not([hidden]) { animation: muncul .18s ease-out }
+    .timer-pilihan .pilih { justify-content: center }
+    .kontrol.sekunder { justify-content: center; gap: 6px }
+    .kontrol.sekunder .kecepatan { padding: 0 10px; font-size: .84rem; white-space: nowrap }
+    .kontrol.sekunder .kecepatan .ic { width: 1.05em; height: 1.05em; margin-right: 3px }
+    .timer-pilihan .volume { margin-top: 14px }
+
+    @keyframes muncul {
+      from { opacity: 0; transform: translateY(-6px) }
+    }
+
+    /* ---- balasan ala chat: [emoji] [pesan] [kirim] ---- */
+    #balas { display: none; margin-top: 4px }
+
+    .balas-judul {
+      margin: 0 0 8px 8px;
+      font-family: "Chewy", "Baloo 2", system-ui, sans-serif;
+      font-size: 1.05rem;
+      text-shadow: 0 1px 8px rgba(8, 4, 24, .5)
+    }
+
+    .wa {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 30px;
+      background: var(--kaca);
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--kilap), var(--bayang)
+    }
+
+    .wa:focus-within { outline: 3px solid color-mix(in srgb, var(--pink) 75%, transparent); outline-offset: 2px }
+
+    .wa textarea {
+      flex: 1;
+      min-width: 0;
+      height: 44px;
+      max-height: 112px;
+      resize: none;
+      overflow-y: auto;
+      background: transparent;
+      border: 0;
+      color: var(--teks);
+      font: inherit;
+      font-weight: 600;
+      line-height: 1.35;
+      padding: 10px 4px
+    }
+
+    .wa textarea::placeholder { color: rgba(255, 243, 226, .6); font-weight: 400 }
+    .wa textarea:focus-visible { outline: none }
+
+    .wa-btn {
+      flex: none;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      background: var(--kaca2);
+      color: var(--teks);
+      box-shadow: var(--kilap);
+      transition: transform .1s
+    }
+
+    .wa-btn .ic { width: 24px; height: 24px }
+    .wa-btn:active { transform: scale(.9) }
+    .wa-btn:disabled { opacity: .5; cursor: not-allowed }
+    .wa-btn[aria-expanded="true"], .wa-kirim { background: var(--acc); color: var(--tinta) }
+
+    .wa-tray {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+      gap: 2px;
+      padding: 10px;
+      border-radius: 24px;
+      background: var(--kaca);
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--kilap), var(--bayang)
+    }
+
+    .wa-tray[hidden] { display: none }
+
+    .wa-tray button {
+      border: 0;
+      background: transparent;
+      font-size: 1.55rem;
+      line-height: 1;
+      padding: 8px 0;
+      border-radius: 14px;
+      cursor: pointer
+    }
+
+    .wa-tray button:hover, .wa-tray button:active { background: var(--kaca2) }
+
+    .balas-status {
+      margin: 8px 0 0 8px;
+      min-height: 1.4em;
+      color: var(--kuning);
+      font-weight: 600;
+      text-shadow: 0 1px 8px rgba(8, 4, 24, .5)
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .timer-pilihan:not([hidden]) { animation: none }
+    }
+
+    /* ---- voice note dari aku ---- */
+    .vn {
+      margin-bottom: 18px;
+      padding: 14px 16px 12px;
+      border-radius: 26px 26px 26px 10px;
+      background: var(--kaca);
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      box-shadow: var(--kilap), var(--bayang)
+    }
+
+    .vn[hidden], .vn-teks[hidden], .vn-kontrol[hidden] { display: none }
+
+    /* baris status yang kosong tidak perlu memakan tempat */
+    #status:empty { min-height: 0; margin: 0 }
+
+    .vn-label {
+      display: block;
+      margin-bottom: 4px;
+      font-family: "Chewy", "Baloo 2", system-ui, sans-serif;
+      font-size: .95rem;
+      color: var(--kuning)
+    }
+
+    .vn-label .ic { width: 1em; height: 1em; margin-right: 3px }
+    .vn-teks { margin: 0; font-weight: 600; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere }
+
+    /* pemutar mungil di sisi bawah kata-kata */
+    .vn-kontrol { display: flex; align-items: center; gap: 8px; width: min(100%, 250px); margin: 10px 0 0 auto }
+
+    .vn-play {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      background: var(--acc);
+      box-shadow: var(--kilap), var(--bayang-kecil);
+      transition: transform .1s
+    }
+
+    .vn-play:active { transform: scale(.9) }
+    .vn-play svg { width: 16px; height: 16px; fill: var(--tinta) }
+    .vn-kontrol .bar { flex: 1; min-width: 0; height: 24px }
+    .vn-kontrol .bar .jalur, .vn-kontrol .bar .isi { height: 6px }
+    .vn-kontrol .bar .titik { width: 14px; height: 14px; margin-left: -7px }
+    .vn-waktu { flex: none; font-size: .78rem; font-weight: 600; color: rgba(255, 243, 226, .8); font-variant-numeric: tabular-nums }
   </style>
 </head>
 
@@ -1426,36 +1597,66 @@
             </svg><small>15</small>
           </button>
         </div>
-        <div class="kontrol" style="margin-top:14px">
-          <button class="kecepatan" id="kecepatan" aria-label="Kecepatan putar">1×</button>
+        <div class="timer-blok">
+          <div class="kontrol sekunder" style="margin-top:14px">
+            <button class="kecepatan" id="kecepatan" aria-label="Kecepatan putar">1×</button>
+            <button class="kecepatan" id="timerToggle" type="button" aria-expanded="false" aria-controls="timerPilihan"
+              aria-label="Timer tidur"><span data-ic="jam"></span><span id="timerLabel">timer</span></button>
+            <button class="kecepatan" id="latarToggle" type="button" aria-expanded="false" aria-controls="latarPilihan"
+              aria-label="Suara latar"><span data-ic="hujan"></span><span id="latarLabel">latar</span></button>
+            <button class="kecepatan" id="autoBtn" type="button" aria-pressed="false"
+              aria-label="Putar dongeng selanjutnya otomatis setelah yang ini selesai"><span data-ic="lanjut"></span><span>lanjut</span></button>
+            <input type="checkbox" id="autoNext" hidden>
+          </div>
+          <div class="timer-pilihan" id="timerPilihan" hidden>
+            <div class="pilih" id="timerTombol"></div>
+          </div>
+          <div class="timer-pilihan" id="latarPilihan" hidden>
+            <div class="pilih" id="latar"></div>
+            <div class="volume"><span>pelan</span><input type="range" id="volLatar" min="0" max="100" value="40"
+                aria-label="Volume suara latar"><span>nyaring</span></div>
+          </div>
         </div>
       </div>
 
       <p id="status" role="status"></p>
 
-      <div class="panel">
-        <h3><span data-ic="hujan"></span>latar</h3>
-        <div class="pilih" id="latar"></div>
-        <div class="volume"><span>pelan</span><input type="range" id="volLatar" min="0" max="100" value="40"
-            aria-label="Volume suara latar"><span>nyaring</span></div>
-      </div>
-
-      <div class="panel">
-        <h3><span data-ic="jam"></span>timer</h3>
-        <div class="pilih" id="timerTombol"></div>
-      </div>
-
-      <div class="panel">
-        <label class="sakelar">
-          <span>GASSS ke dongeng selanjutnyaa<br><small style="color:var(--redup);font-weight:600">otomatis diputar setelah yang ini
-              selesai</small></span>
-          <input type="checkbox" id="autoNext"><span class="rel"></span>
-        </label>
+      <!-- voice note dari aku (opsional per dongeng): teks + pemutar mungil di bawahnya -->
+      <div class="vn" id="vnBlok" hidden>
+        <audio id="vn" preload="metadata"></audio>
+        <small class="vn-label" id="vnLabel"></small>
+        <p class="vn-teks" id="vnTeks"></p>
+        <div class="vn-kontrol" id="vnKontrol">
+          <button type="button" class="vn-play" id="vnPlay" aria-label="Putar voice note">
+            <svg id="vnIcPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+            <svg id="vnIcPause" viewBox="0 0 24 24" hidden><path d="M6 5h4v14H6zm8 0h4v14h-4z" /></svg>
+          </button>
+          <div class="bar" id="vnBar">
+            <div class="jalur"></div>
+            <div class="isi" id="vnIsi"></div>
+            <div class="titik" id="vnTitik"></div>
+            <input type="range" id="vnSeek" min="0" max="1000" value="0" aria-label="Posisi voice note">
+          </div>
+          <span class="vn-waktu" id="vnWaktu">0:00 / 0:00</span>
+        </div>
       </div>
 
       <div class="penutup" id="penutup">
         <span class="judul"><span id="penutupJudul"></span> <span data-ic="bulan"></span></span>
         <span id="penutupIsi"></span>
+      </div>
+
+      <!-- balasan buat dia kirim, ala chat (hanya aktif kalau Supabase sudah diisi) -->
+      <div class="balas" id="balas">
+        <p class="balas-judul">mau bilang apa ke aku?</p>
+        <form class="wa" id="balasForm" autocomplete="off">
+          <button type="button" class="wa-btn" id="balasEmojiBtn" aria-label="Pilih emoji" aria-expanded="false"
+            aria-controls="balasTray"><span data-ic="senyum"></span></button>
+          <textarea id="balasPesan" rows="1" maxlength="500" aria-label="Pesan buat aku" placeholder="tulis pesan…"></textarea>
+          <button type="submit" class="wa-btn wa-kirim" id="balasKirim" aria-label="Kirim pesan"><span data-ic="kirim"></span></button>
+        </form>
+        <div class="wa-tray" id="balasTray" role="group" aria-label="Pilih emoji" hidden></div>
+        <p class="balas-status" id="balasStatus" role="status"></p>
       </div>
     </section>
   </main>
@@ -1491,6 +1692,8 @@ const PESAN_MALAM = [
 // gambar : cover dari ilustrasi dongengnya, taruh di folder "gambar/" (jpg/png/webp, ukuran persegi ~600x600 cukup).
 //          Kosongkan "" atau biarkan file belum ada -> otomatis pakai ikon.
 // file   : audio di folder "audio/" (disarankan .mp3). Kosongkan "" -> kartu tampil "segera hadir".
+// vnTeks / vn : (opsional) kata-kata dan file voice note dari kamu untuk dongeng ini, mis. vn: "audio/vn-kancil.m4a".
+//               Kalau memakai Supabase, ini diisi lewat admin.html.
 //
 // CATATAN: kalau supabase-config.js sudah diisi, daftar dongeng diambil dari Supabase (diatur lewat admin.html)
 // dan daftar di bawah ini cuma jadi cadangan kalau Supabase belum bisa dihubungi dan belum ada cache.
@@ -1592,6 +1795,7 @@ const PENUTUP_ISI   = "good nightt sayangg, mimpi indah yaa, boboo yang nyenyakk
 const $ = id => document.getElementById(id);
 const player = $("player");
 const ICON = {
+  lanjut:'<path d="M5 5l9 7-9 7z"/><path d="M18 5v14"/>',
   bulan:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
   bintang:'<path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.1 6.4L12 17.4l-5.700 3.1 1.1-6.4L2.8 9.6l6.4-.9z"/>',
   mahkota:'<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
@@ -1604,7 +1808,10 @@ const ICON = {
   angin:'<path d="M3 8h10a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3 12h15a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3 16h7"/>',
   mati:'<path d="M11 5L6 9H3v6h3l5 4z"/><path d="M16 9l5 6M21 9l-5 6"/>',
   jam:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-  kontras:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'
+  kontras:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>',
+  senyum:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14c.9 1.4 2.1 2 3.5 2s2.6-.6 3.5-2"/><path d="M9 9.5h.01M15 9.5h.01"/>',
+  kirim:'<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/>',
+  mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>'
 };
 const ic = n => '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + (ICON[n] || ICON.bintang) + '</svg>';
 document.querySelectorAll("[data-ic]").forEach(e => { e.innerHTML = ic(e.dataset.ic); });
@@ -1796,6 +2003,7 @@ player.addEventListener("pause", () => { ikonPlay(true); simpanProgres(true); if
 player.addEventListener("ended", () => {
   const j = dongeng[aktif].judul; delete progres[j]; LS.set("dongeng.progres", progres);
   $("penutup").style.display = "block";
+  tampilBalas();
   if (timer.mode === "habis") { mulaiFade(); return; }
   const sel = cariLain(aktif, 1);
   if ($("autoNext").checked && sel >= 0) buka(sel, true);
@@ -1830,6 +2038,8 @@ function hentiLatar(){
 function setLatar(jenis){
   latarAktif = jenis; hentiLatar();
   [...$("latar").children].forEach(b => b.classList.toggle("aktif", b.dataset.j === jenis));
+  $("latarToggle").classList.toggle("aktif", jenis !== "mati");
+  $("latarLabel").textContent = jenis === "mati" ? "latar" : jenis;
   if (jenis === "mati") return;
   if (!ctx) {
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
@@ -1871,14 +2081,17 @@ const timer = { mode: null, akhir: 0, tick: null, fade: null };
 function bersihTimer(){
   clearInterval(timer.tick); clearInterval(timer.fade);
   timer.tick = timer.fade = null; timer.mode = null;
-  fadeFaktor = 1; player.volume = 1; terapkanVol();
+  fadeFaktor = 1; player.volume = 1; vn.volume = 1; terapkanVol();
   $("pil").classList.remove("tampil");
 }
 function tandaiTimer(val){
   [...$("timerTombol").children].forEach(b => b.classList.toggle("aktif", b.dataset.v === String(val)));
+  const nyala = !!val;
+  $("timerToggle").classList.toggle("aktif", nyala);
+  $("timerLabel").textContent = !nyala ? "timer" : val === "habis" ? "habis cerita" : val + " mnt";
 }
 function atur(v){
-  bersihTimer(); tandaiTimer(v);
+  tutupTimer(); bersihTimer(); tandaiTimer(v);
   if (!v) return;
   if (v === "habis") {
     timer.mode = "habis";
@@ -1900,9 +2113,9 @@ function mulaiFade(){
   $("pil").textContent = "suaranyaa berkurangg sedikit"; $("pil").classList.add("tampil");
   timer.fade = setInterval(() => {
     fadeFaktor = Math.max(0, fadeFaktor - 0.03);
-    player.volume = fadeFaktor; terapkanVol();
+    player.volume = fadeFaktor; vn.volume = fadeFaktor; terapkanVol();
     if (fadeFaktor <= 0.02) {
-      player.pause(); setLatar("mati"); bersihTimer(); tandaiTimer(0);
+      player.pause(); vn.pause(); setLatar("mati"); bersihTimer(); tandaiTimer(0);
       $("status").textContent = "sudaaa berhentii dongengnyaa. bobooo yangg nyenyak yaa cantikk";
     }
   }, 250);
@@ -1917,6 +2130,44 @@ MENIT_TIMER.forEach(m => {
   b.onclick = () => atur(v); $("timerTombol").appendChild(b);
 });
 
+/* ---------- voice note dari aku (per dongeng, opsional) ---------- */
+const vn = $("vn");
+function vnIkon(main){
+  $("vnIcPlay").toggleAttribute("hidden", !main);
+  $("vnIcPause").toggleAttribute("hidden", main);
+  $("vnPlay").setAttribute("aria-label", main ? "Putar voice note" : "Jeda voice note");
+}
+function vnBar(){
+  const d = vn.duration || 0, t = vn.currentTime || 0, p = d ? t / d * 100 : 0;
+  $("vnIsi").style.width = p + "%"; $("vnTitik").style.left = p + "%";
+  $("vnSeek").value = d ? Math.round(t / d * 1000) : 0;
+  $("vnWaktu").textContent = fmt(t) + " / " + fmt(d);
+}
+function pasangVN(d){
+  vn.pause();
+  const ada = !!(d.vnTeks || d.vn);
+  $("vnBlok").hidden = !ada;
+  $("vnLabel").innerHTML = d.vn ? ic("mic") + " voice note dari aku" : ic("hati") + " pesan dari aku";
+  $("vnTeks").textContent = d.vnTeks || ""; $("vnTeks").hidden = !d.vnTeks;
+  $("vnKontrol").hidden = !d.vn;
+  if (d.vn) vn.src = d.vn; else { vn.removeAttribute("src"); vn.load(); }
+  vnIkon(true); vnBar();
+}
+$("vnPlay").onclick = () => {
+  if (vn.paused) {
+    player.pause();
+    vn.play().catch(() => { $("status").textContent = "voice note nya belum bisa diputar, coba lagi yaa"; });
+  } else vn.pause();
+};
+$("vnSeek").oninput = e => { if (vn.duration) vn.currentTime = e.target.value / 1000 * vn.duration; };
+vn.addEventListener("loadedmetadata", vnBar);
+vn.addEventListener("timeupdate", vnBar);
+vn.addEventListener("play", () => { vnIkon(false); if (!player.paused) player.pause(); });
+vn.addEventListener("pause", () => vnIkon(true));
+vn.addEventListener("ended", () => { vnIkon(true); vn.currentTime = 0; vnBar(); });
+vn.addEventListener("error", () => { if (vn.getAttribute("src")) { vnIkon(true); $("status").textContent = "voice note nya belum bisa dimuat, hehee."; } });
+player.addEventListener("play", () => { if (!vn.paused) vn.pause(); });
+
 /* ---------- buka / kembali ---------- */
 function buka(i, langsungPutar){
   aktif = i; const d = dongeng[i];
@@ -1928,27 +2179,30 @@ function buka(i, langsungPutar){
   $("penutupJudul").textContent = PENUTUP_JUDUL;
   $("penutupIsi").textContent = PENUTUP_ISI + " — " + NAMA_KAMU;
   $("penutup").style.display = "none";
+  resetBalas();
+  pasangVN(d);
   $("status").textContent = "";
   const p = progres[d.judul];
   pulihPosisi = p && p.t > 3 ? p.t : null;
   terakhir = d.judul; LS.set("dongeng.terakhir", terakhir);
   if (d.file) player.src = d.file;
   else { player.pause(); player.removeAttribute("src"); player.load(); $("status").textContent = "dongengnyaa belum kuu tambahinn, tunggu yaa sayangg, hehee."; }
-  player.playbackRate = KEC[kecepatanIdx]; player.volume = fadeFaktor;
+  player.playbackRate = KEC[kecepatanIdx]; player.volume = fadeFaktor; vn.volume = fadeFaktor;
   perbaruiBar(); ikonPlay(true);
   $("utama").style.display = "none"; $("detail").style.display = "block";
   window.scrollTo(0, 0); sesiMedia();
   if (langsungPutar) player.play().catch(() => {});
 }
 $("kembali").onclick = () => {
-  player.pause(); simpanProgres(true);
+  player.pause(); vn.pause(); simpanProgres(true);
   $("detail").style.display = "none"; $("utama").style.display = "block";
   aktif = -1; gambarDaftar(); window.scrollTo(0, 0);
 };
 
 /* kontrol keyboard */
 document.addEventListener("keydown", e => {
-  if (aktif < 0 || /INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  const ae = document.activeElement;
+  if (aktif < 0 || /INPUT|TEXTAREA/.test(ae.tagName) || ae.closest("#balas, .timer-blok, #vnBlok")) return;
   if (e.code === "Space") { e.preventDefault(); $("putar").click(); }
   if (e.code === "ArrowLeft") geser(-15);
   if (e.code === "ArrowRight") geser(15);
@@ -1980,7 +2234,7 @@ const SB_URL = String(window.SB_URL || "").replace(/\/+$/, "");
 const SB_KEY = String(window.SB_KEY || "");
 const SB_AKTIF = !!(SB_URL && SB_KEY) && !/GANTI/i.test(SB_URL + SB_KEY);
 const urlPublik = p => p ? SB_URL + "/storage/v1/object/public/dongeng/" + p.split("/").map(encodeURIComponent).join("/") : "";
-const dariRow = r => ({ ikon: r.ikon || "bintang", judul: r.judul, pembuka: r.pembuka || "", gambar: urlPublik(r.gambar_path), file: urlPublik(r.audio_path) });
+const dariRow = r => ({ id: r.id, ikon: r.ikon || "bintang", judul: r.judul, pembuka: r.pembuka || "", gambar: urlPublik(r.gambar_path), file: urlPublik(r.audio_path), vnTeks: r.vn_teks || "", vn: urlPublik(r.vn_audio_path) });
 let memuat = false;
 
 function terapkan(daftar){
@@ -2005,6 +2259,108 @@ async function muatDongeng(){
     memuat = false;
     if (dongeng.length) gambarDaftar(); else terapkan(DONGENG_STATIS);
   }
+}
+
+/* ---------- tombol timer di bawah pemutar ---------- */
+function tutupTimer(){ $("timerPilihan").hidden = true; $("timerToggle").setAttribute("aria-expanded", "false"); }
+function tutupLatar(){ $("latarPilihan").hidden = true; $("latarToggle").setAttribute("aria-expanded", "false"); }
+$("timerToggle").onclick = () => {
+  const buka = $("timerPilihan").hidden;
+  tutupLatar();
+  $("timerPilihan").hidden = !buka;
+  $("timerToggle").setAttribute("aria-expanded", String(buka));
+};
+$("latarToggle").onclick = () => {
+  const buka = $("latarPilihan").hidden;
+  tutupTimer();
+  $("latarPilihan").hidden = !buka;
+  $("latarToggle").setAttribute("aria-expanded", String(buka));
+};
+$("autoBtn").onclick = () => {
+  const nyala = !$("autoNext").checked;
+  $("autoNext").checked = nyala;
+  $("autoBtn").classList.toggle("aktif", nyala);
+  $("autoBtn").setAttribute("aria-pressed", String(nyala));
+};
+
+/* ---------- balasan buat dia kirim (ala chat) ---------- */
+const EMOJI_BALAS = ["❤️", "🥰", "😘", "😍", "😴", "🥹", "😊", "😂", "🤭", "🥺", "😭", "🌙",
+                     "⭐", "💕", "💖", "💗", "💤", "💞", "🤗", "😇", "🙈", "💋", "🌹", "✨"];
+let sedangKirim = false;
+
+function autoTinggi(){
+  const t = $("balasPesan");
+  t.style.height = "auto";
+  t.style.height = Math.min(112, Math.max(44, t.scrollHeight)) + "px";
+}
+function tutupTray(){ $("balasTray").hidden = true; $("balasEmojiBtn").setAttribute("aria-expanded", "false"); }
+function sisipEmoji(e){
+  const t = $("balasPesan");
+  const a = typeof t.selectionStart === "number" ? t.selectionStart : t.value.length;
+  const z = typeof t.selectionEnd === "number" ? t.selectionEnd : a;
+  const baru = t.value.slice(0, a) + e + t.value.slice(z);
+  if (baru.length > t.maxLength) return;
+  t.value = baru;
+  const pos = a + e.length; t.setSelectionRange(pos, pos);
+  autoTinggi();
+  if (!sedangKirim) $("balasStatus").textContent = "";
+}
+
+(function siapBalas(){
+  EMOJI_BALAS.forEach(e => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = e; b.setAttribute("aria-label", "Sisipkan " + e);
+    b.onclick = () => sisipEmoji(e);
+    $("balasTray").appendChild(b);
+  });
+  $("balasEmojiBtn").onclick = () => {
+    const buka = $("balasTray").hidden;
+    $("balasTray").hidden = !buka;
+    $("balasEmojiBtn").setAttribute("aria-expanded", String(buka));
+    if (buka) $("balasTray").scrollIntoView({ block: "nearest", behavior: "smooth" });
+    else $("balasPesan").focus();
+  };
+  $("balasPesan").addEventListener("input", () => { autoTinggi(); if (!sedangKirim) $("balasStatus").textContent = ""; });
+  // di komputer Enter = kirim, Shift+Enter = baris baru; di HP Enter = baris baru
+  $("balasPesan").addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing && window.matchMedia("(pointer: fine)").matches) {
+      e.preventDefault(); kirimBalasan();
+    }
+  });
+  $("balasForm").addEventListener("submit", e => { e.preventDefault(); kirimBalasan(); });
+})();
+
+function resetBalas(){
+  sedangKirim = false;
+  $("balasPesan").value = ""; autoTinggi();
+  tutupTray();
+  $("balasStatus").textContent = ""; $("balasKirim").disabled = false;
+  $("balas").style.display = "none";
+}
+function tampilBalas(){
+  if (!SB_AKTIF) return;
+  resetBalas();
+  $("balas").style.display = "block";
+}
+async function kirimBalasan(){
+  if (sedangKirim) return;
+  const d = dongeng[aktif]; if (!d) return;
+  const teks = $("balasPesan").value.trim();
+  if (!teks) { $("balasStatus").textContent = "tulis sesuatu dulu yaa"; return; }
+  sedangKirim = true; $("balasKirim").disabled = true; $("balasStatus").textContent = "mengirim…";
+  try {
+    const res = await fetch(SB_URL + "/rest/v1/balasan", {
+      method: "POST",
+      headers: { apikey: SB_KEY, "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ dongeng_id: d.id || null, judul: String(d.judul).slice(0, 160), emoji: "", pesan: teks.slice(0, 500) })
+    });
+    if (!res.ok) throw new Error("status " + res.status);
+    $("balasPesan").value = ""; autoTinggi(); tutupTray();
+    $("balasStatus").textContent = "terkirim! makasii yaa sayangg, nanti aku bacaa hehee";
+  } catch (err) {
+    $("balasStatus").textContent = "yahh gagal kirim, coba lagi yaa";
+  }
+  sedangKirim = false; $("balasKirim").disabled = false;
 }
 
 muatDongeng();
